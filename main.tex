@@ -26,7 +26,7 @@ Shubham Chatterjee \\ sc1242@cs.unh.edu
 \maketitle
 
 \begin{abstract}
-With the huge amount of unstructured data in the form of text at our disposal, being able to efficiently search and retrieve information from this data is an important problem. The field of Information Retrieval (IR) is concerned with developing technology for matching \textit{information needs} with \textit{information objects}\cite{balog2018entity}. The information need may range from a few simple keywords to a natural language question whereas the information object has traditionally been passages or documents. However, as large-scale structured knowledge repositories (called \textit{knowledge bases}), which organize information around specific things or objects (called \textit{entities}) have become available, rich semantic information has become available which may help to improve the quality of the search results (passages or documents). In this paper, we present a brief survey of methods available in the literature for leveraging this semantic information (in the form of entities) for passage retrieval.  
+With the huge amount of unstructured data in the form of text at our disposal, being able to efficiently search and retrieve information from this data is an important problem. The field of Information Retrieval (IR) is concerned with developing technology for matching \textit{information needs} with \textit{information objects}\cite{balog2018entity}. The information need may range from a few simple keywords to a natural language question whereas the information object has traditionally been passages or documents. However, as large-scale structured knowledge repositories (called \textit{knowledge bases}), which organize information around specific things or objects (called \textit{entities}) have become available, rich semantic information has become available which may help to improve the quality of the search results (passages or documents). In this paper, we present a brief survey of methods available in the literature for leveraging this semantic information (in the form of entities) for document retrieval.  
 
 
  %Analysis of web search query logs has shown that a large portion of the queries now contain some entity, reflecting an increase in the demands of users on retrieving relevant information about entities such as persons, organizations, products, etc. Advances in information extraction allow us to efficiently extract entities from free text. Since an entity is expected to capture the semantic content of documents and queries more accurately than a term, it would be interesting to study whether leveraging the information about entities can improve the retrieval accuracy. Moreover, several studies indicate that 40-70\% of all web searches target entities. In such cases, it is pertinent to explain to the user how the retrieved entity is related to the original query. With an increase in the focus on entities for search, it becomes necessary to organize them in a structure which is suitable for efficient retrieval. Knowledge Graphs provide a way to structure semantic information which can be used effectively in search. Such knowledge graphs contain entities as nodes with the relationships between them as edges. Explaining such entity relationships is another common information retrieval task. In this paper, we present a brief survey of methods available in the literature for leveraging entities in search. 
@@ -112,11 +112,13 @@ Latent Entity Space (LES) uses entities to represent the semantic content of doc
 \subsection{Query Expansion with Freebase (Xiong et al.\cite{xiong2015query})}
 \label{subsec:query expansion with freebase}
 
-This paper focuses on using a knowledge base (Freebase) for the purpose of query expansion and ranks documents using the expanded query. Two tasks are identified:
-\begin{itemize}
-    \item \textbf{Entity Ranking}. Given a query,  find relevant entities for the query.
-    \item \textbf{Document Ranking}. Use the information about the entities obtained above to expand the original query and re-rank an initial candidate set of documents for the query.
-\end{itemize}
+This paper focuses on using a knowledge base (Freebase) for the purpose of query expansion and ranks documents using the expanded query. Given a query, the task is to find relevant entities for the query and use the information about the entities to expand the original query and re-rank an initial candidate set of documents for the query
+
+%Two tasks are identified:
+%\begin{itemize}
+%    \item \textbf{Entity Ranking}. Given a query,  find relevant entities for the query.
+ %   \item \textbf{Document Ranking}. Use the information about the entities obtained above to expand the original query and re-rank an initial candidate set of documents for the query.
+%\end{itemize}
 They propose an unsupervised and a supervised method for expansion using Freebase. 
 \begin{itemize}
     \item \textbf{Unsupervised Method}. This is done in two steps:
@@ -124,7 +126,7 @@ They propose an unsupervised and a supervised method for expansion using Freebas
         \item \textit{Object Linking}. This is done by either retrieving objects directly from Freebase or selecting them from the annotations in top ranked documents for the query.
         \item \textit{Term Selection}. This is done by either using the \textit{tf-idf} information from the object's Freebase description or by using the similarity of query and the term’s distributions in Freebase’s categories. 
     \end{itemize}
-    \item \textbf{Supervised Method}. A supervised model combines information derived from Freebase descriptions and categories to select terms that are effective for query expansion. The following hree scores describing the relationship between a query-term pair are used as features:
+    \item \textbf{Supervised Method}. A supervised model combines information derived from Freebase descriptions and categories to select terms that are effective for query expansion. The following three scores describing the relationship between a query-term pair are used as features:
     \begin{enumerate}
         \item \textit{tf-idf} Pseudo Relevance Feedback score in retrieved objects.
         \item \textit{tf-idf} Pseudo Relevance Feedback score in top retrieved documents’ FACC1 \footnote{FACC1 is the Freebase annotation of TREC queries and ClueWeb corpora provided by Google} annotations.
@@ -137,8 +139,19 @@ Once expansion terms are selected, the initial set of candidate documents retrie
 \subsection{Entity-Based Language Models (Raviv et al.\cite{raviv2016document})}
 \label{subsec:eblm}
 
+The authors present various entity-based language models to address the task of ad-hoc document retrieval. Previous work have focused on either projection based methods \cite{liu2015latent} or expansion based methods \cite{xiong2015query}. This paper studies whether the markup of entities in a query and documents is, by itself, sufficient information for improving retrieval effectiveness. Various entity-based language models which consider both single terms in the text as well as term sequences marked as entities by an existing entity-linking tool, are proposed. These language models are induced from the query and documents in the corpus and serve for retrieval in the language modeling framework. The main novelty of these language models is accounting, simultaneously, for (i) the
+uncertainty in entity linking — specifically, the confidence levels of entity markups; and, (ii) the balance between using term-based and entity-based information. A document is ranked by the cross entropy between the language models induced from the query and the document.
+
 \subsection{Bag-of-Entities Representation for Ranking (Xiong et al. \cite{xiong2016bag})}
 \label{subsec:bag of entities}
+
+Bag-of-Words is a common technique of representing queries and documents in IR. This paper describes a Bag-of-Entities representation for query and documents and evaluates its performance on a publicly available dataset. They use 3 entity linking systems to annotate query and documents with Freebase entities. These are \textit{FACC1}, \textit{TagMe} and \textit{CMNS}\footnote{CMNS is an entity linking system that spots texts using surface forms from FACC1 annotation, and links all of them to their most frequently linked entities}.
+%\begin{itemize}
+%    \item \textbf{FACC1}.
+%    \item \textbf{TagMe}.
+%    \item \textbf{CMNS}. It is an entity linking system that spots texts using surface forms from FACC1 annotation, and links all of them to their most frequently linked entities
+%\end{itemize}
+Bag-of-Entities vector for the query and documents are created using the entity annotations and two ranking models are used to re-rank an initial candidate set of documents for the query. The first model called ranks a document by the number of query entities it contains and the second ranks a document by the frequency of query entities in it.
 
 \subsection{Semantic Enabled Language Model (Ensan et al.\cite{ensan2017document})}
 \label{subsec:selm}
@@ -147,6 +160,16 @@ Semantic Enabled Language Model (SELM) addresses the task of document retrieval 
 
 \subsection{JointSem (Xiong et al.\cite{xiong2017jointsem})}
 \label{subsec:jointsem}
+
+JointSem presents a joint semantic ranking method that combines query entity linking and entity-based document ranking. A dictionary containing mappings from surface forms of entities to candidate entities in constructed. This dictionary contains all possible surface forms of entities and is collected from Wikipedia. JointSem consists of the follwing three steps:
+\begin{enumerate}
+    \item \textbf{Spotting}. N-grams in the query are looked up in the surface form dictionary. Start from the first word, spot the longest surface forms, and move to the word after the surface form. No overlapped spots are allowed. Several features are extracted to describe the reliability of the surface form.
+    \item \textbf{Linking}. In this step, the spotted surface forms are aligned with candidate entities. If a surface form has several candidate entities, the authors link all of them to avoid over-committing. Several features are extracted to describe the relevance of the entity to the query.
+    \item \textbf{Ranking}. The entity’s name and description and the document’s title and body are used to extract several entity-document features using standard IR models such as BM25, Language Models with Dirichlet Smoothing, TF-IDF and Coordinate Match. These features are used to rank the documents for the query. The ranking model consists of three parts: The first part learns the importance of the surface form, the second part learns the importance of the aligned entity and the third part learns the ranking of document for the entity. The three parts are combined for the final ranking score and trained using standard pairwise learning-to-rank with hinge loss by standard back-propagation.
+\end{enumerate}
+
+\subsection{Explicit Semantic Ranking (Xiong et al.\cite{xiong2017explicit})}
+\label{subsec:esr}
 
 \subsection{Word-Entity Duet Representations for Document Ranking (Xiong et al.\cite{xiong2017word})}
 \label{subsec:word entity duet}
